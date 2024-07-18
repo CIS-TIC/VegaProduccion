@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>VEGA Estado Ocupacion</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+        <!--- <script src='../static/fullcalendar-6.1.11/dist/index.global.js'></script> --->
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendar1El = document.getElementById('calendar1');
+                var calendar2El = document.getElementById('calendar2');
+                var calendar3El = document.getElementById('calendar3');
+                var calendar4El = document.getElementById('calendar4');
+                var calendar5El = document.getElementById('calendar5');
+                
+                var aulaSelect = document.getElementById('aula-select1');
+                var aulaSelect2 = document.getElementById('aula-select2');
+                var aulaSelect3 = document.getElementById('aula-select3');
+                var aulaSelect4 = document.getElementById('aula-select4');
+                var aulaSelect5 = document.getElementById('aula-select5');
+                var maximo = document.getElementById('aviso-max-cal');
+                
+                // Hide all dropdown lists initially
+                aulaSelect2.style.display = 'none';
+                aulaSelect3.style.display = 'none';
+                aulaSelect4.style.display = 'none';
+                aulaSelect5.style.display = 'none';
+                maximo.style.display = 'none';
+                
+
+                function fetchEventsForAula(idaula, calendar) {
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("GET", "/eventos/" + idaula);
+                  xhr.onload = function() {
+                    if (xhr.status === 200) {
+                      var events = JSON.parse(xhr.responseText);
+                      calendar.removeAllEvents(); // Limpia los eventos existentes
+                      calendar.addEventSource(events); // Agrega los nuevos eventos
+                      calendar.render();
+                    }
+                  };
+                  xhr.send();
+                }
+
+                aulaSelect.addEventListener("change", function() {
+                  var idaula = this.value;
+                  fetchEventsForAula(idaula, calendar1);
+                  aulaSelect2.style.display = 'flex';
+                });
+                aulaSelect2.addEventListener("change", function() {
+                  var idaula = this.value;
+                  fetchEventsForAula(idaula, calendar2);
+                  aulaSelect3.style.display = 'flex';
+                });
+                aulaSelect3.addEventListener("change", function() {
+                  var idaula = this.value;
+                  fetchEventsForAula(idaula, calendar3);
+                  aulaSelect4.style.display = 'flex';
+                });
+                aulaSelect4.addEventListener("change", function() {
+                  var idaula = this.value;
+                  fetchEventsForAula(idaula, calendar4);
+                  aulaSelect5.style.display = 'flex';
+                });
+                aulaSelect5.addEventListener("change", function() {
+                  var idaula = this.value;
+                  fetchEventsForAula(idaula, calendar5);
+                  maximo.style.display = 'flex';
+                });
+                
+                var calendar1 = new FullCalendar.Calendar(calendar1El, {
+                    height: 'auto',
+                    // stickyHeaderDates: false, // for disabling
+                    
+                    headerToolbar: {
+                        left: 'prev,next',
+                        center: 'title',
+                        right: 'hoyCustom'
+                    },
+                    initialView: 'timeGridWeek',
+                    slotLabelContent: false,
+                    allDaySlot: false,
+                    slotDuration: '1:00',
+                    firstDay: '1',
+                    slotMinTime: '7:00',
+                    slotMaxTime: '20:00',
+                    locale:"es",
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false,
+
+                    //Los botones del calendario se personalizan para disparar el salto en todos los calendarios
+                    customButtons: {
+                        prev: {
+                            click: function() {
+                            calendar1.prev();
+                            calendar2.prev();
+                            calendar3.prev();
+                            calendar4.prev();
+                            calendar5.prev();
+                            }
+                        },
+                        next: {
+                            click: function() {
+                            calendar1.next();
+                            calendar2.next();
+                            calendar3.next();
+                            calendar4.next();
+                            calendar5.next();
+                            }
+                        },
+                        hoyCustom: {
+                            text: 'Hoy',
+                            click: function() {
+                            calendar1.today();
+                            calendar2.today();
+                            calendar3.today();
+                            calendar4.today();
+                            calendar5.today();
+                            }
+                        }
+                    }
+
+                });
+                var calendar2 = new FullCalendar.Calendar(calendar2El, {
+                    height: 'auto',
+                    // stickyHeaderDates: false, // for disabling
+                    
+                    headerToolbar: {
+                        left: false,
+                        center: 'title',
+                        right: false
+                    },
+                    initialView: 'timeGridWeek',
+                    slotLabelContent: false,
+                    allDaySlot: false,
+                    slotDuration: '1:00',
+                    firstDay: '1',
+                    slotMinTime: '7:00',
+                    slotMaxTime: '20:00',
+                    locale:"es",
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false
+                });
+                var calendar3 = new FullCalendar.Calendar(calendar3El, {
+                    height: 'auto',
+                    // stickyHeaderDates: false, // for disabling
+                    
+                    headerToolbar: {
+                        left: false,
+                        center: 'title',
+                        right: false
+                    },
+                    initialView: 'timeGridWeek',
+                    slotLabelContent: false,
+                    allDaySlot: false,
+                    slotDuration: '1:00',
+                    firstDay: '1',
+                    slotMinTime: '7:00',
+                    slotMaxTime: '20:00',
+                    locale:"es",
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false
+                });
+                var calendar4 = new FullCalendar.Calendar(calendar4El, {
+                    height: 'auto',
+                    // stickyHeaderDates: false, // for disabling
+                    
+                    headerToolbar: {
+                        left: false,
+                        center: 'title',
+                        right: false
+                    },
+                    initialView: 'timeGridWeek',
+                    slotLabelContent: false,
+                    allDaySlot: false,
+                    slotDuration: '1:00',
+                    firstDay: '1',
+                    slotMinTime: '7:00',
+                    slotMaxTime: '20:00',
+                    locale:"es",
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false
+                });
+                var calendar5 = new FullCalendar.Calendar(calendar5El, {
+                    height: 'auto',
+                    // stickyHeaderDates: false, // for disabling
+                    
+                    headerToolbar: {
+                        left: false,
+                        center: 'title',
+                        right: false
+                    },
+                    initialView: 'timeGridWeek',
+                    slotLabelContent: false,
+                    allDaySlot: false,
+                    slotDuration: '1:00',
+                    firstDay: '1',
+                    slotMinTime: '7:00',
+                    slotMaxTime: '20:00',
+                    locale:"es",
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: false
+                });
+            });
+        </script>
+        <style>
+            @media print {
+                .page-break { 
+                display: block; 
+                page-break-before: always; 
+                    }
+                }
+        </style>
+    </head>
+    <body class="body1" style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+        <div class="container text-center">
+            <br/>
+            <div>
+                <h1>ESTADO DE OCUPACION</h1>
+            </div>
+            <br>
+            <div style="float: right;">      
+            <button class="btn btn-primary d-print-none" onclick="window.print()">Imprimir reservas</button>
+            </div> 
+            <div class="form-floating mb-3"style="width:300px">
+                <select id="aula-select1" class="form-select" th:field="*{aula}" required="">
+                    <option value="">Selecciona un aula</option>
+                    <option th:each="aula : ${aulas}" th:value="${aula.idaula}" th:text="${aula.nombre}"></option>
+                </select>
+                <label for="aula-select1">Aula</label>
+            </div>
+
+            <div id='calendar1' style="background-color:#DED3B1;"></div>
+            <div class="page-break"></div>
+            <br/>     
+            <div class="form-floating mb-3"style="width:300px">
+                <select id="aula-select2" class="form-select" th:field="*{aula}" required="">
+                    <option value="">Selecciona un aula</option>
+                    <option th:each="aula : ${aulas}" th:value="${aula.idaula}" th:text="${aula.nombre}"></option>
+                </select>
+            </div>
+            <div id='calendar2' style="background-color:#DED3B1;"></div>
+            <div class="page-break"></div>
+            <br/>
+            <div class="form-floating mb-3"style="width:300px">
+                <select id="aula-select3" class="form-select" th:field="*{aula}" required="">
+                    <option value="">Selecciona un aula</option>
+                    <option th:each="aula : ${aulas}" th:value="${aula.idaula}" th:text="${aula.nombre}"></option>
+                </select>
+            </div>
+            <div id='calendar3' style="background-color:#DED3B1;"></div>
+            <div class="page-break"></div>
+            <br/>
+            <div class="form-floating mb-3"style="width:300px">
+                <select id="aula-select4" class="form-select" th:field="*{aula}" required="">
+                    <option value="">Selecciona un aula</option>
+                    <option th:each="aula : ${aulas}" th:value="${aula.idaula}" th:text="${aula.nombre}"></option>
+                </select>
+            </div>
+            <div id='calendar4' style="background-color:#DED3B1;"></div>
+            <div class="page-break"></div>
+            <br/>
+            <div class="form-floating mb-3"style="width:300px">
+                <select id="aula-select5" class="form-select" th:field="*{aula}" required="">
+                    <option value="">Selecciona un aula</option>
+                    <option th:each="aula : ${aulas}" th:value="${aula.idaula}" th:text="${aula.nombre}"></option>
+                </select>
+            </div>
+            <div id='calendar5' style="background-color:#DED3B1;"></div>
+            <div class="page-break"></div>
+            <br/>
+            <div class="container text-center" id='aviso-max-cal'>
+                <h3>Máximo de vistas alcanzado</h3>
+            </div>
+        </div>
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>
+                    

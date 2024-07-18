@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="utf-8"/>
+        <title>Listado Reservas VEGA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+
+    </head>
+
+    <body style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+        <div class="container text-center">
+            <!-- Mensajes de confirmacion de reservas -->
+            <div th:if=${param.aceptadaReserva}>
+                <h6 class="alert alert-success">Se ha aceptado la solicitud de reserva de aula.</h6>
+            </div>
+            <div th:if=${param.modificadaReserva}>
+                <h6 class="alert alert-success">Se ha modificado la solicitud de reserva de aula.</h6>
+            </div>
+            <div th:if=${param.rechazadaReserva}>
+                <h6 class="alert alert-danger">Se ha rechazado la solicitud de reserva de aula.</h6>
+            </div>
+            <div th:if=${param.eliminadaReserva}>
+                <h6 class="alert alert-danger">Se ha eliminado la solicitud de reserva de aula.</h6>
+            </div>
+            <div th:if=${param.error}>
+                <h6 class="alert alert-info">Se ha producido un error.</h6>
+            </div>
+            <br/>
+            <h1>Listado de Reservas </h1>
+            <br/>
+            <div>
+                <a style="float: right" class="btn btn-dark" th:href="@{/solicitudAula}" >Nueva Solicitud de Aula</a>
+                <br/>
+            </div>
+            <br/>
+            <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" th:checked="${#httpServletRequest.requestURI.equals('/mostrarReservas')}" 
+                       autocomplete="off" onclick="window.location.href = '/mostrarReservas'"/>
+                <label class="btn btn-primary" for="btnradio1">Todas las Reservas</label>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" th:checked="${#httpServletRequest.requestURI.equals('/mostrarReservasPendientes')}"
+                       autocomplete="off" onclick="window.location.href = '/mostrarReservasPendientes'"/>
+                <label class="btn btn-primary" for="btnradio2">Reservas Pendientes</label>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" th:checked="${#httpServletRequest.requestURI.equals('/mostrarReservasAceptadas')}" 
+                       autocomplete="off" onclick="window.location.href = '/mostrarReservasAceptadas'"/>
+                <label class="btn btn-primary" for="btnradio3">Reservas Aceptadas</label>
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio4" th:checked="${#httpServletRequest.requestURI.equals('/mostrarReservasRechazadas')}" 
+                       autocomplete="off" onclick="window.location.href = '/mostrarReservasRechazadas'"/>
+                <label class="btn btn-primary" for="btnradio4">Reservas Rechazadas</label>
+            </div>
+            <br/>
+            <br/>
+            <div class="btn-group" role="group" th:if="${#httpServletRequest.requestURI.equals('/mostrarReservas') or #httpServletRequest.requestURI.equals('/mostrarReservasPendientes')}">
+                <button id="aceptar-seleccion" type="button" class="btn btn-success">Aceptar selección</button>
+                <button id="rechazar-seleccion" type="button" class="btn btn-danger">Rechazar selección</button>
+            </div>
+            <br/>
+            <!-- Lista vacia de reservas -->
+            <div th:if="${listaReservas == null or listaReservas.empty}">
+                <br/>
+                <div class="recuadro_central_busqueda text-center">
+                    <h5>La lista de Reservas está vacía.</h5>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        
+        <div th:if="${listaReservas != null and !listaReservas.empty}" style=" margin: 20px; display: flex; justify-content: center;">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th sec:authorize="hasRole('ROLE_COORDINADOR')">Seleccionar</th>
+                        <th>Id Reserva</th>
+                        <th>Solicitante</th>
+                        <th>Autorizador</th>
+                        <th>Aula</th>
+                        <th>Edificio</th> 
+                        <th>Curso</th>
+                        <th>Civil/Militar</th>
+                        <th>Día Inicio</th>
+                        <th>Día Fin</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Observaciones</th>
+                        <th>Estado</th>
+                        <th sec:authorize="hasAnyRole('ROLE_USER','ROLE_COORDINADOR')">Editar</th>   
+                        <th sec:authorize="hasRole('ROLE_USER')" >Eliminar</th>   
+                        <th sec:authorize="hasRole('ROLE_COORDINADOR')">Aceptar</th>  
+                        <th sec:authorize="hasRole('ROLE_COORDINADOR')">Rechazar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reserva : ${listaReservas}">
+                        <td sec:authorize="hasRole('ROLE_COORDINADOR')" th:if="${reserva.estado_reserva == null}">Selección
+                            <input type="checkbox" class="form-check-input" th:value="${reserva.idreserva}" id="chk-${reserva.idreserva}" name="seleccionadas"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_COORDINADOR')" th:unless="${reserva.estado_reserva == null}"> </td>
+                        <td th:text="${reserva.idreserva}">Mostrar Id Reserva</td>
+                        <td th:text="${reserva.fk_solicitante.mail}">Mostrar Solicitante</td>
+                        <td th:text="${reserva.estado_reserva == null ? 'Pendiente' : reserva.fk_autorizador.mail}">Mostrar Autorizador</td>
+                        <td th:text="${reserva.fkaula.idaula}">Mostrar Aula</td>
+                        <td th:text="${reserva.fkaula.edificio}">Mostrar Edificio</td>  
+                        <td th:text="${reserva.nombre_curso}">Mostrar Curso</td>
+                        <td th:text="${reserva.civil_militar} ? 'Civil' : 'Militar'">Mostrar Civil/Militar</td>
+                        <td th:text="${reserva.dia_inicio}">Mostrar Día Inicio</td>
+                        <td th:text="${reserva.dia_fin}">Mostrar Día Fin</td>
+                        <td th:text="${reserva.hora_inicio}">Mostrar Hora Inicio</td>
+                        <td th:text="${reserva.hora_fin}">Mostrar Hora Fin</td>
+                        <td th:text="${reserva.observaciones}">Mostrar Observaciones</td>
+                        <td th:style="${reserva.estado_reserva == null ? '' : (reserva.estado_reserva == true ? 'color: green' : 'color: red')}"
+                            th:text="${reserva.estado_reserva == null ? 'Pendiente' : (reserva.estado_reserva == true ? 'Aceptada' : 'Rechazada')}">Mostrar Estado</td>
+                        <td sec:authorize="hasAnyRole('ROLE_USER','ROLE_COORDINADOR')">
+                            <a type="button" class="btn btn-primary" th:if="${reserva.estado_reserva == null}" th:href="@{/editarReserva/} + ${reserva.idreserva}" th:text="Editar"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_USER')">
+                            <a type="button" class="btn btn-danger" th:if="${reserva.estado_reserva == null}" th:href="@{/eliminarReserva/} + ${reserva.idreserva}" th:text="Eliminar"
+                               onclick="return confirm('¿Está seguro de ELIMINAR esta reserva?');"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_COORDINADOR')">
+                            <a type="button" class="btn btn-success" th:if="${reserva.estado_reserva == null}" th:href="@{/aceptarReserva/} + ${reserva.idreserva}" th:text="Aceptar" 
+                               onclick="return confirm('¿Está seguro de ACEPTAR esta reserva?');"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_COORDINADOR')">
+                            <a type="button" class="btn btn-danger" th:if="${reserva.estado_reserva == null}" th:href="@{/rechazarReserva/} + ${reserva.idreserva}" th:text="Rechazar" 
+                               onclick="return confirm('¿Está seguro de RECHAZAR esta reserva?');"/>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- Peticiones asincronas de los botones de aceptar/rechazar las reservas seleccionadas -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+                                   $(document).ready(function () {
+                                       $('#aceptar-seleccion').click(function (event) {
+                                           console.log('Botón Aceptar selección pulsado');
+                                           event.preventDefault();
+                                           var seleccionadas = [];
+                                           $('input[name="seleccionadas"]:checked').each(function () {
+                                               seleccionadas.push($(this).val());
+                                           });
+                                           for (var i = 0; i < seleccionadas.length; i++) {
+                                               var idreserva = seleccionadas[i];
+                                               $.ajax({
+                                                   type: 'GET',
+                                                   url: '/aceptarReserva/' + idreserva
+                                               });
+                                               setTimeout(function () {
+                                                   location.reload();
+                                               }, 3000);
+                                           }
+                                       });
+                                       $('#rechazar-seleccion').click(function (event) {
+                                           console.log('Botón Rechazar selección pulsado');
+                                           event.preventDefault();
+                                           var seleccionadas = [];
+                                           $('input[name="seleccionadas"]:checked').each(function () {
+                                               seleccionadas.push($(this).val());
+                                           });
+                                           for (var i = 0; i < seleccionadas.length; i++) {
+                                               var idreserva = seleccionadas[i];
+                                               $.ajax({
+                                                   type: 'GET',
+                                                   url: '/rechazarReserva/' + idreserva
+                                               });
+                                               setTimeout(function () {
+                                                   location.reload();
+                                               }, 3000);
+                                           }
+                                       });
+                                   });
+        </script>
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

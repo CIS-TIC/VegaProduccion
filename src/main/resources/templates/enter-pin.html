@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Ingresar PIN</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    </head>
+    <body class="body1" style="background-color:#DAE8FC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <br/>
+        <div class="container text-center">
+            <div class="container text-center">
+                <div class="recuadro_admin_central" style="width: 50%; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <h2>Ingresar PIN</h2>
+                    <form th:action="@{/enter-pin}" method="post">
+                        <div class="form-floating mb-3"style="width:500px">
+                            <input type="email" id="email" name="email" class="form-control" required=""/>
+                            <label for="email">Correo Electrónico</label>
+
+                        </div>
+                        <div class="form-floating mb-3"style="width:500px">
+                            <input type="text" id="pin" name="pin" class="form-control" required=""/>
+                            <label for="pin">PIN</label>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Validar PIN</button>
+                    </form>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                </div>
+            </div>
+        </div>
+            <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

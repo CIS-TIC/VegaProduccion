@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Reserva Aula.</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}" />
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+    </head>
+
+
+    <body class="body1" style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+
+        <div class="container text-center">
+            <div class="recuadro_admin_central" style="width: 50%; margin: auto;">
+
+                <!--Título del formulario-->
+                <h1>Nueva Reserva de Aula</h1>
+
+                <form th:action="@{/solicitudAula}" th:object="${reserva}" method="post">
+
+                    <!--Lista desplegable de Edificios-->
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="edificio" name="edificio">
+                            <option value="" selected="" ></option>
+                            <option th:each="edificio : ${listaEdificios}" th:value="${edificio}" th:text="${edificio}"></option>
+                        </select>
+                        <label for="edificio">Edificio</label>
+                    </div>
+
+                    <!--Lista desplegable de Aulas-->
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="aula" th:field="*{fkaula}" required="">
+                            <option value="" selected=""></option>
+                        </select>
+                        <label for="aula">Aula</label>
+                    </div>
+
+                    <!-- Tipo de reserva -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="reservaUnica" name="tipoReserva" value="reservaUnica" checked=""/>
+                                <label class="form-check-label" for="reservaUnica">Reserva Única</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="reservasRecurrentes" name="tipoReserva" value="reservasRecurrentes"/>
+                                <label class="form-check-label" for="reservasRecurrentes" >Reserva Recurrente</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fechas -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="date" id="fechaInicio" th:field="*{dia_inicio}" required=""/>
+                                <label for="fechaInicio">Fecha:</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating" id="fechaFin" style="display: none">
+                                <input class="form-control" type="date" id="fechaFinal" th:field="*{dia_fin}" required=""/>
+                                <label for="fechaFinal">Fecha de fin:</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horas -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input  class="form-control" type="time" id="horaInicio" th:field="*{hora_inicio}" required=""/>
+                                <label for="horaInicio">Hora de inicio:</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input  class="form-control" type="time" id="horaFin" th:field="*{hora_fin}" required=""/>
+                                <label for="horaFin">Hora de fin:</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos Aulas -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="text" id="capacidadAula" readonly="" disabled=""/>
+                                <label for="capacidadAula">Capacidad Alumnos</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="text" id="puestosAula" readonly="" disabled=""/>
+                                <label for="puestosAula">Número de Puestos</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos Curso -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+
+                                <input class="form-control" type="text" id="nombreCurso" th:field="*{nombre_curso}" maxlength="45"  required=""/>
+                                <label for="nombreCurso">Nombre del curso</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="number" id="numeroAlumnos" th:field="*{num_alumnos}" min="1"/>
+                                <label for="numeroAlumnos">Número de alumnos</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipo Curso -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="cursoCivil" th:field="*{civil_militar}" value="true" required=""/>
+                                <label for="cursoCivil">Curso Civil</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="cursoMilitar" checked="" th:field="*{civil_militar}" value="false"  required=""/>
+                                <label for="cursoMilitar">Curso Militar</label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <!--Lista desplegable de Ejercitos-->
+                            <div class="form-floating mb-3" id="seleccionEjercito" style="display: none;">
+                                <select class="form-select" id="ejercitoSeleccionado" th:field="*{ejercito}">
+                                    <option value="Armada" selected="selected">Armada</option>
+                                    <option value="Ejército de Tierra">Ejército de Tierra</option>
+                                    <option value="Ejército del Aire">Ejército del Aire</option>
+                                </select>
+                                <label for="ejercitoSeleccionado">Seleccione un ejército</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="observaciones" th:field="*{observaciones}" maxlength="255"></textarea>
+                        <label for="observaciones">Observaciones</label>
+                    </div>
+
+                    <!-- Botones -->
+                    <button type="submit" class="btn btn-success">Enviar</button>
+                    <!--Borrar formulario. Aparece una ventana de confirmación-->
+                    <button type="button" class="btn btn-danger" onclick="window.modal2.showModal();">Borrar datos</button>
+                    <!--Regresa a la pagina de Inicio-->
+                    <a class="btn btn-danger" th:href="@{/profesor}">Cancelar</a>
+
+                </form>
+                <br/>
+            </div>
+        </div>
+
+        
+        <!-- Escuchará el evento de cambio en el desplegable de edificios. Cuando se selecciona un edificio, se realiza una solicitud AJAX al servidor 
+          para obtener las aulas correspondientes. Luego, se vacía el desplegable de aulas y se llena con las aulas obtenidas de la respuesta del servidor. -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+                        $(document).ready(function () {
+                            $("#edificio").change(function () {
+                                var edificioSeleccionado = $(this).val();
+                                $.ajax({
+                                    url: '/aulasPorEdificio',
+                                    type: 'get',
+                                    data: {edificio: edificioSeleccionado},
+                                    success: function (response) {
+                                        var aulaDropdown = $("#aula");
+                                        aulaDropdown.empty();
+                                        $.each(response, function (i, aula) {
+                                            aulaDropdown.append($('<option></option>').attr('value', aula.idaula).text(aula.nombre));
+                                        });
+                                    }
+                                });
+                            });
+                        });
+        </script>
+
+        <!-- FECHAS -->
+        <!-- El siguiente código JavaScript para controlar la visibilidad de los campos de fecha -->
+        <script>
+            $(document).ready(function () {
+                $("input[name='tipoReserva']").change(function () {
+                    var reservaSeleccionada = $(this).val();
+                    if (reservaSeleccionada === "reservaUnica") {
+                        $("#fechaFin").hide();
+                    } else {
+                        $("#fechaFin").show();
+                    }
+                });
+            });
+        </script>
+        <!-- Cuando es reserva unica, se asigna a dia_fin el ultimo dia del año en curso -->
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                var today = new Date();
+                var anio = today.getFullYear();
+
+                var ultimoDia = new Date(anio, 11, 31);
+
+                var yyyy = ultimoDia.getFullYear();
+                var mm = String(ultimoDia.getMonth() + 1).padStart(2, '0');
+                var dd = String(ultimoDia.getDate()).padStart(2, '0');
+                ultimoDia = yyyy + '-' + mm + '-' + dd;
+                document.getElementById('fechaFinal').value = ultimoDia;
+            });
+        </script>
+        <!-- Cuando es reserva unica, se asigna el valor de dia_inicio a dia_fin, sobreescribiendo el script anterior-->
+        <script>
+            $(document).ready(function () {
+                $("#fechaInicio").change(function () {
+                    if ($("#reservaUnica").is(":checked")) {
+                        var fechaInicio = $(this).val();
+                        $("#fechaFinal").val(fechaInicio);
+                    }
+                });
+            });
+        </script>
+        <!-- Este script evita que se seleccionen dias pasados, y que la fecha final -->
+        <script>
+            $(document).ready(function () {
+                // Establecer la fecha mínima de inicio al día actual
+                var today = new Date().toISOString().split('T')[0];
+                document.getElementById('fechaInicio').setAttribute('min', today);
+
+                // Actualizar la fecha mínima de fin cuando cambia la fecha de inicio
+                $("#fechaInicio").change(function () {
+                    var fechaInicio = $(this).val();
+                    document.getElementById('fechaFinal').setAttribute('min', fechaInicio);
+                });
+            });
+        </script>
+
+        <!-- FECHAS -->
+        <!-- Este código asegura que la hora fin no pueda ser anterior a la hora inicio-->
+        <script>
+            $(document).ready(function () {
+                $("#horaInicio").change(function () {
+                    var horaInicio = $(this).val();
+                    $("#horaFin").attr({"min": horaInicio});
+                    $("#horaFin").val(horaInicio);
+                });
+            });
+        </script>
+
+        <!-- DATOS AULA -->
+        <!-- el siguiente código JavaScript para actualizar los campos de capacidad y puestos del aula -->
+        <script>
+            $(document).ready(function () {
+                $("#aula").change(function () {
+                    var aulaSeleccionada = $(this).val();
+                    $.ajax({
+                        url: '/aulaPorId',
+                        type: 'get',
+                        data: {idaula: aulaSeleccionada},
+                        success: function (response) {
+                            $("#capacidadAula").val(response.capacidad);
+                            $("#puestosAula").val(response.puestos);
+                        }
+                    });
+                });
+            });
+        </script>
+
+        <!-- TIPO DE CURSO -->
+        <!-- el siguiente código JavaScript selecciona curso militar por defecto-->
+        <script>
+            $(document).ready(function () {
+                $("#cursoMilitar").prop("checked", true);
+                $("#seleccionEjercito").show();
+            });
+        </script>
+        <!-- el siguiente código JavaScript para mostrar los ejercitos si el curso es militar-->
+        <script>
+            $(document).ready(function () {
+                $("input[name='civil_militar']").change(function () {
+                    var cursoSeleccionado = $(this).val();
+                    if (cursoSeleccionado === "false") {
+                        $("#seleccionEjercito").show();
+                    } else {
+                        $("#seleccionEjercito").hide();
+                    }
+                });
+            });
+        </script> 
+
+        <!-- FUNCIONALIDADES VISTA -->
+        <!--Script para actualizar la página. Borra todos los datos introducidos por el usuario-->
+        <script>
+            function actualizapagina() {
+                //Recarga la página, por lo que cualquier contenido en las cajas aparecerá vacío
+                location.reload();
+            }
+        </script>
+        <!--VENTANA EMERGENTE - Confirmar si se desea borrar los datos introducidos-->
+        <dialog id="modal2">
+            <h2>¿Está seguro de que desea borrar los datos?</h2>
+
+            <button type="button" class="btn btn-primary" onclick="window.modal2.close();">No, mantener los
+                datos</button>
+            <button onclick="actualizapagina()" type="button" class="btn btn-danger">Sí, borrar todo</button>
+        </dialog>
+
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="utf-8"/>
+        <title>Listado Aulas VEGA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    </head>
+
+    <body style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+
+        <div class="container text-center">
+
+            <h1>Listado de Aulas </h1>
+            <br/>
+            <!-- Mensajes de confirmacion -->
+            <div th:if=${param.registroAula}>
+                <h6 class="alert alert-success">Se ha registrado con éxito una nueva aula en la Base de Datos.</h6>
+            </div>
+            <div th:if=${param.aulaModificada}>
+                <h6 class="alert alert-success">Se han modificado los datos del aula en la Base de Datos.</h6>
+            </div>
+            <div th:if=${param.aulaEliminada}>
+                <h6 class="alert alert-danger">Se ha elimnado el aula de la Base de Datos.</h6>
+            </div>
+            <div th:if=${param.error}>
+                <h6 class="alert alert-info">Se ha producido un error.</h6>
+            </div>
+
+            <div th:if="${listaAulas == null or listaAulas.empty}">
+                <br/>
+                <div class="recuadro_central_busqueda text-center">
+                    <h5>La lista de aulas está vacía.</h5>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${listaAulas != null and !listaAulas.empty}" style=" margin: 20px; display: flex; justify-content: center;">
+
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Id Aula</th>
+                        <th>Edificio</th>
+                        <th>Nombre</th>
+                        <th>Capacidad</th>
+                        <th>Puestos</th>
+                        <th>Modulo</th>
+                        <th>Zar</th>
+                        <th>Rap</th>
+                        <th>Red Ossorio</th>
+                        <th>Wan Pg</th>
+                        <th>Proyector</th>
+                        <th>Pizarra Digital</th>
+                        <th>Extras</th>
+                        <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Editar</th>    
+                        <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Eliminar</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="aula : ${listaAulas}">
+                        <td><a th:href="@{/verAula/} + ${aula.idaula}" th:text="${aula.idaula}">Mostrar idaula</a></td>
+                        <td th:text="${aula.edificio}">Mostrar edificio</td>
+                        <td th:text="${aula.nombre}">Mostrar Nombre</td>
+                        <td th:text="${aula.capacidad}">Mostrar Capacidad</td>
+                        <td th:text="${aula.puestos}">Mostrar Puestos</td>
+                        <td th:text="${aula.modulo}">Mostrar Modulo</td>
+                        <td th:text="${aula.zar} ? 'Sí' : 'No'">Mostrar Zar</td>
+                        <td th:text="${aula.rap} ? 'Sí' : 'No'">Mostrar Rap</td>
+                        <td th:text="${aula.red_ossorio} ? 'Sí' : 'No'">Mostrar Red Ossorio</td>
+                        <td th:text="${aula.wan_pg} ? 'Sí' : 'No'">Mostrar Wan Pg</td>
+                        <td th:text="${aula.proyector} ? 'Sí' : 'No'">Mostrar Proyector</td>
+                        <td th:text="${aula.pizarra_digital} ? 'Sí' : 'No'">Mostrar Pizarra Digital</td>
+                        <td th:text="${aula.extras}">Mostrar Extras</td>
+                        <td sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                            <a type="button" class="btn btn-primary" th:href="@{/editarAula/} + ${aula.idaula}" th:text="Editar"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                            <a type="button" class="btn btn-danger" th:href="@{/eliminarAula/} + ${aula.idaula}" th:text="Eliminar" 
+                               onclick="return confirm('¿Está seguro de eliminar esta aula? Este paso es irreversible.');"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

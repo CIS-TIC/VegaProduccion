@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="utf-8"/>
+        <title>Usuarios Autorizados VEGA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    </head>
+    <body style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+
+        <div class="container text-center">
+            <h1>Listado de Usuarios Autorizados en VEGA</h1>
+            <br/>
+
+            <div th:if=${param.usuarioActualizado}>
+                <h6 class="alert alert-success">Se ha editado con éxito el usuario.</h6>
+            </div>
+            <div th:if=${param.usuarioEliminado}>
+                <h6 class="alert alert-danger">Se ha eliminado con éxito el usuario.</h6>
+            </div>
+            <div th:if=${param.error}>
+                <h6 class="alert alert-info">Se ha producido un error.</h6>
+            </div>
+
+            <div th:if="${listaUsuarios == null or listaUsuarios.empty}">
+                <br/>
+                <div class="recuadro_central_busqueda text-center">
+                    <h5>La lista de usuarios autorizados está vacía.</h5>
+                </div>
+            </div>
+        </div>
+
+
+        <div th:if="${listaUsuarios != null and !listaUsuarios.empty}" style=" margin: 20px; display: flex; justify-content: center;">
+
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Empleo</th>
+                        <th>Nombre</th>
+                        <th>1º Apellido</th>
+                        <th>2º Apellido</th>
+                        <th>Email</th>
+                        <th>Departamento</th>
+                        <th>Roles</th>
+                        <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Editar</th>    
+                        <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Eliminar</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${listaUsuarios}">
+                        <td th:text="${usuario.empleo}">Mostrar Empleo</td>
+                        <td th:text="${usuario.nombre}">Mostrar Nombre</td>
+                        <td th:text="${usuario.apellido1}">Mostrar Primer Apellido</td>
+                        <td th:text="${usuario.apellido2}">Mostrar Segundo Apellido</td>
+                        <td th:text="${usuario.mail}">Mostrar Email</td>
+                        <td th:text="${usuario.departamento}">Mostrar Departamento</td>
+                        <td>
+                            <span th:each="rol : ${usuario.roles}" th:text="${rol.rol} + ' '"></span>
+                        </td>
+
+                        <td sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                            <a type="button" class="btn btn-primary text-center" th:href="@{/editarUsuario/} + ${usuario.idusuario}" th:text="Editar"/>
+                        </td>
+                        <td sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                            <a type="button" class="btn btn-danger text-center" th:href="@{/eliminarUsuario/} + ${usuario.idusuario}" th:text="Eliminar" 
+                               onclick="return confirm('¿Está seguro de eliminar este usuario? Este paso es irreversible.');"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>Ver Aula VEGA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    </head>
+
+    <body class="body1" style="background-color:#FFF2CC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+
+        <div class="container text-center">
+            <div class="recuadro_admin_central" style="width: 50%; margin: auto;">
+                <h1>Ver Datos del Aula</h1>
+                
+                <form th:action="@{/editarAula/} + ${aula.idaula}" method="post" th:object="${aula}">
+                    
+                    <!--Id-->
+                    <div class="form-floating mb-3">
+                        <input id="idaula" type="text" class="form-control" th:field="*{idaula}" required="" autofocus="autofocus" readonly/>
+                        <label for="idaula">Id. Aula</label>
+                    </div>
+                    <!--Edificio-->
+                    <div class="form-floating mb-3">
+                        <input id="edificio" type="text" class="form-control" th:field="*{edificio}" readonly></input>
+                        <label for="edificio">Edificio</label>
+                    </div>
+                    <!--Nombre-->
+                    <div class="form-floating mb-3">
+                        <input id="nombre" type="text" class="form-control" th:field="*{nombre}" readonly></input>
+                        <label for="nombre">Nombre</label>
+                    </div>
+                    <!--Capacidad-->
+                    <div class="form-floating mb-3">
+                        <input id="capacidad" type="text" class="form-control" th:field="*{capacidad}" readonly></input>
+                        <label for="capacidad">Capacidad</label>
+                    </div>
+                    <!--Puestos-->
+                    <div class="form-floating mb-3">
+                        <input id="puestos" type="text" class="form-control" th:field="*{puestos}" readonly></input>
+                        <label for="puestos">Puestos</label>
+                    </div>
+                    <!--Módulo-->
+                    <div class="form-floating mb-3">
+                        <input id="modulo" type="text" class="form-control" th:field="*{modulo}" readonly></input>
+                        <label for="modulo">Módulo</label>
+                    </div>
+
+                    <!--CheckBoxes-->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="zar" th:field="*{zar}" disabled/>
+                                <label class="form-check-label" for="zar">ZAR</label>
+                            </div>
+
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="rap" th:field="*{rap}" disabled/>
+                                <label class="form-check-label" for="rap">RAP</label>
+                            </div>
+
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="red_ossorio" th:field="*{red_ossorio}" disabled/>
+                                <label class="form-check-label" for="red_ossorio">Red Ossorio</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="wan_pg" th:field="*{wan_pg}" disabled/>
+                                <label class="form-check-label" for="wan_pg">WAN-PG</label>
+                            </div>
+
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="proyector" th:field="*{proyector}" disabled/>
+                                <label class="form-check-label" for="proyector">Proyector</label>
+                            </div>
+
+                            <div class="form-check form-switch text-start">
+                                <input class="form-check-input" type="checkbox" role="switch" id="pizarra_digital" th:field="*{pizarra_digital}" disabled/>
+                                <label class="form-check-label" for="pizarra_digital">Pizarra digital</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <!--Extras-->
+                    <div class="form-floating mb-3">
+                        <input id="extras" type="text" class="form-control" th:field="*{extras}" readonly></input>
+                        <label for="extras">Otros equipamientos</label>
+                    </div>
+                    <br/>
+                </form>
+                <div class="recuadro_central_busqueda text-center">
+                    <a th:href="@{'/fotos/'+${aula.idaula}+'.jpg'}" target="_blank" rel="noopener">
+                        <img th:src="@{'/fotos/'+${aula.idaula}+'.jpg'}" alt="Foto de la aula" style="width: 300px;" />
+                      </a>
+                </div>
+                <br/>
+                <a type="button" class="btn btn-danger" href="javascript:history.back()">Volver Atrás</a>
+            </div>
+        </div>
+        <br/>
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>

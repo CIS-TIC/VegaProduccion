@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>ERROR VEGA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/_main.css" th:href="@{/css/_main.css}"/>
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    </head>
+
+    <body class="body1" style="background-color:#DAE8FC; padding-bottom: 220px;">
+        <header th:replace="layout/plantillas::header"/>
+        <div class="item1">
+            <nav th:replace="layout/plantillas::nav"/>
+        </div>
+        <br/>
+
+        <div class="container text-center">
+            <div class="row">
+
+                <!--COLUMNA DE LA IZQUIERDA-->
+                <div class="col">
+                    <img src="static/img/error.jpg" th:src="@{/img/error.jpg}" alt="mapache_error" class="img-fluid" style="background-color:#DAE8FC"/>
+                </div>
+
+                <!--COLUMNA CENTRAL-->
+                <div class="col">
+                    <h2>Se ha producido un Error</h2>
+                    <h3 th:text="${error}"></h3>
+                </div>
+
+                <!--COLUMNA DE LA DERECHA-->
+                <div class="col">
+                    <button class="btn btn-danger" onclick="window.history.back();" style="margin-top: 20px;">Volver atrás</button>
+                </div>
+            </div>
+        </div>
+        
+        <br/>
+        <footer th:replace="layout/plantillas::footer"/>
+    </body>
+</html>
