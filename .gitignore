@@ -1,0 +1,2 @@
+# No incluir la carpeta /target que se crea al correr el proyecto en local
+target/
